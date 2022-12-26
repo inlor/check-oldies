@@ -259,6 +259,18 @@ def get_parser():
         ),
     )
     parser.add_argument(
+        "--user",
+        help=(
+            f"Username of the SMTP server."
+        ),
+    )
+    parser.add_argument(
+        "--password",
+        help=(
+            f"Password of the SMTP server."
+        ),
+    )
+    parser.add_argument(
         "--warning-delay",
         type=int,
         help=(
@@ -303,9 +315,7 @@ def main(argv=None):
             print(email.get_content())
             print("-" * 20)
     if "mail" in config.output:
-        user = os.getenv('SMTP_USER')
-        password = os.getenv('SMTP_PASSWORD')
-        with config.smtp.make_connection(user, password) as smtp:
+        with config.smtp.make_connection(config.user, config.password) as smtp:
             for email in emails:
                 smtp.send_message(email)
                 print(f"Sent e-mail to {email['To']}")
