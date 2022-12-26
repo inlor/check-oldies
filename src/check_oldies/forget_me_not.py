@@ -3,6 +3,7 @@ import collections
 import dataclasses
 import datetime
 from email.message import EmailMessage
+import os
 import pathlib
 import smtplib
 import sys
@@ -50,9 +51,12 @@ class SmtpConfig:
     host: str
     port: int = 0  # use OS default behaviour
 
-    def make_connection(self):
-        return smtplib.SMTP(self.host, port=self.port)
-
+    def make_connection(self, user=None, password=None):
+        smtp = smtplib.SMTP(self.host, port=self.port)
+        if user and password:
+            smtp.starttls()
+            smtp.login(user, password)
+        return smtp
 
 @dataclasses.dataclass
 class Config:
@@ -298,7 +302,9 @@ def main(argv=None):
             print(email.get_content())
             print("-" * 20)
     if "mail" in config.output:
-        with config.smtp.make_connection() as smtp:
+        user = os.getenv('SMTP_USER')
+        password = os.getenv('SMTP_PASSWORD')
+        with config.smtp.make_connection(user, password) as smtp:
             for email in emails:
                 smtp.send_message(email)
                 print(f"Sent e-mail to {email['To']}")
