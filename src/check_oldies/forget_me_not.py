@@ -52,6 +52,7 @@ class SmtpConfig:
     port: int = 0  # use OS default behaviour
 
     def make_connection(self, user=None, password=None):
+        print("debug", user, password)
         smtp = smtplib.SMTP(self.host, port=self.port)
         if user and password:
             smtp.starttls()
