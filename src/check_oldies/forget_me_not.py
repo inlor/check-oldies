@@ -89,7 +89,9 @@ class Config:
         "{lines}",
     ))
     email_body_branch_line_template: str = "{age} days: {repo}: {branch_details}"
-
+    # SMTP Authentication
+    user: str = None
+    password: str = None
 
     def __post_init__(self):
         assert set(self.output).issubset({"stdout", "mail"})
